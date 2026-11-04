@@ -11,6 +11,8 @@ dependencies = [
     "discord-py>=2.7.1",
     "ratelimit>=2.2.1",
 ]
+license="MIT"
+license-files=["LICENSE"]
 
 
 [tool.setuptools]
