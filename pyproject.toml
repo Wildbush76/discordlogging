@@ -1,5 +1,5 @@
 [project]
-name = "discordlogging"
+name = "discord.py.logging"
 version = "0.1.0"
 description = "A logger handle that uses discord"
 readme = "README.md"
