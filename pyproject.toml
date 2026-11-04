@@ -15,9 +15,6 @@ license="MIT"
 license-files=["LICENSE"]
 
 
-[tool.setuptools]
-packages = ["discord.ext.logging"]
-
 [dependency-groups]
 dev = [
     "coverage>=7.17.0",
