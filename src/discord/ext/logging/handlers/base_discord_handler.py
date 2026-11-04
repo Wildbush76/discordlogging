@@ -5,16 +5,16 @@ from typing import override
 
 from ratelimit import limits, sleep_and_retry
 
-from discord.ext import logging
-from discord.ext.logging import Embed
+import discord
+from discord import Client, Embed
 
 
 class BaseDiscordHandler(Handler, ABC):
-    def __init__(self, client: logging.Client, level: int = 0):
+    def __init__(self, client: Client, level: int = 0):
         super().__init__(level=0)
         self._ready = asyncio.Event()
         self._successful = False
-        self._client: logging.Client = client
+        self._client: Client = client
         self._logger = getLogger(self.__class__.__name__)
         asyncio.create_task(self.__setup())
 
@@ -28,7 +28,7 @@ class BaseDiscordHandler(Handler, ABC):
         pass
 
     @abstractmethod
-    async def _send_message(self, embed: logging.Embed):
+    async def _send_message(self, embed: Embed):
         pass
 
     @override
@@ -37,22 +37,22 @@ class BaseDiscordHandler(Handler, ABC):
 
     async def info(self, title: str, message: str):
         await self._send_message(
-            Embed(title=title, description=message, color=logging.Color.blue())
+            Embed(title=title, description=message, color=discord.Color.blue())
         )
 
     async def warning(self, title: str, message: str):
         await self._send_message(
-            Embed(title=title, description=message, color=logging.Color.yellow())
+            Embed(title=title, description=message, color=discord.Color.yellow())
         )
 
     async def error(self, title: str, message: str):
         await self._send_message(
-            Embed(title=title, description=message, color=logging.Color.red())
+            Embed(title=title, description=message, color=discord.Color.red())
         )
 
     async def critical(self, title: str, message: str):
         await self._send_message(
-            Embed(title=title, description=message, color=logging.Color.dark_red())
+            Embed(title=title, description=message, color=discord.Color.dark_red())
         )
 
     @sleep_and_retry
