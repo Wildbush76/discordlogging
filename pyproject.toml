@@ -1,6 +1,6 @@
 [project]
 name = "discord.py.logging"
-version = "0.1.0"
+version = "0.2.0"
 description = "A logger handle that uses discord"
 readme = "README.md"
 authors = [
