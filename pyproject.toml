@@ -18,7 +18,6 @@ license-files=["LICENSE"]
 [dependency-groups]
 dev = [
     "coverage>=7.17.0",
-    "dpytest>=0.7.0",
     "pytest>=9.2.0",
 ]
 
