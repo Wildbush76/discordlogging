@@ -10,6 +10,7 @@
     "cSpell.words": [
         "asyncio",
         "dpytest",
+        "Messageable",
         "pytest"
     ]
 }

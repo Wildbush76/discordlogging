@@ -3,33 +3,37 @@ from abc import ABC, abstractmethod
 from logging import Handler, LogRecord, getLogger
 from typing import override
 
+from discord.abc import Messageable
+from discord.ext.commands import Bot
 from ratelimit import limits, sleep_and_retry
 
 import discord
-from discord import Client, Embed
+from discord import Embed
 
 
 class BaseDiscordHandler(Handler, ABC):
-    def __init__(self, client: Client, level: int = 0):
+    def __init__(self, client: Bot, level: int = 0):
         super().__init__(level=0)
         self._ready = asyncio.Event()
-        self._successful = False
-        self._client: Client = client
+        self._client: Bot = client
         self._logger = getLogger(self.__class__.__name__)
-        asyncio.create_task(self.__setup())
+        self.__channel: Messageable | None = None
+        client.add_listener(self.__setup, "on_ready")
 
     async def __setup(self):
         await self._client.wait_until_ready()
-        self._successful = await self._setup()
+        if self.__channel is None:
+            self.__channel = await self._setup()
         self._ready.set()
 
     @abstractmethod
-    async def _setup(self) -> bool:
+    async def _setup(self) -> Messageable | None:
         pass
 
-    @abstractmethod
+    @sleep_and_retry
+    @limits(calls=1, period=0.5)
     async def _send_message(self, embed: Embed):
-        pass
+        await self.__channel.send(embed=embed)
 
     @override
     def emit(self, record: LogRecord) -> None:
@@ -55,11 +59,9 @@ class BaseDiscordHandler(Handler, ABC):
             Embed(title=title, description=message, color=discord.Color.dark_red())
         )
 
-    @sleep_and_retry
-    @limits(calls=1, period=0.5)
     async def _send_record(self, record: LogRecord) -> None:
         await self._ready.wait()
-        if self._successful is None or self._client.is_closed():
+        if self.__channel is None or self._client.is_closed():
             return
 
         title = f"{record.name}:{record.levelname}"
