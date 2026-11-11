@@ -6,9 +6,10 @@ from discord.ext.commands import Bot
 
 import discord
 
-from .. import get_user_log_handler
+from .. import get_channel_log_handler
 
 wildbush_id = 704773768035172726
+test_channel = 1472690953402843263
 
 
 def main():
@@ -35,10 +36,11 @@ async def _main():
     # setup logger
     logger = logging.getLogger()
     logging.basicConfig(
-        level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+        level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s"
     )
 
-    discord_handler = get_user_log_handler(bot, wildbush_id)
+    discord_handler = get_channel_log_handler(bot, test_channel)
+    discord_handler.setLevel(logging.INFO)
     logger.addHandler(discord_handler)
 
     # TEST

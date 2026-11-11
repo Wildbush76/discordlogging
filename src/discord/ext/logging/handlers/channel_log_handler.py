@@ -13,11 +13,11 @@ class ChannelLogHandler(BaseDiscordHandler):
 
     async def _setup(self) -> bool:
         try:
-            channel = self._client.fetch_channel(self.target_channel_id)
+            channel = await self._client.fetch_channel(self._target_channel_id)
             return channel
         except NotFound:
             self._logger.error(
-                f"Channel : {self.target_channel_id} could not be found for logging!"
+                f"Channel : {self._target_channel_id} could not be found for logging!"
             )
             return None
         except HTTPException:

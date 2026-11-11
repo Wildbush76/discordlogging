@@ -31,8 +31,9 @@ class BaseDiscordHandler(Handler, ABC):
         pass
 
     @sleep_and_retry
-    @limits(calls=1, period=0.5)
+    @limits(calls=1, period=1)
     async def _send_message(self, embed: Embed):
+        self._logger.debug(f"Sending message! {embed.description}")
         await self.__channel.send(embed=embed)
 
     @override
