@@ -1,7 +1,7 @@
 import asyncio
 from abc import ABC, abstractmethod
 from logging import Handler, LogRecord, getLogger
-from typing import override
+from typing import Final, override
 
 from discord.abc import Messageable
 from discord.ext.commands import Bot
@@ -12,6 +12,9 @@ from discord import Embed
 
 
 class BaseDiscordHandler(Handler, ABC):
+    MAX_DESCRIPTION_LENGTH: Final[int] = 4096
+    MAX_TITLE_LENGTH: Final[int] = 256
+
     def __init__(self, client: Bot, level: int = 0):
         super().__init__(level=0)
         self._ready = asyncio.Event()
@@ -67,6 +70,16 @@ class BaseDiscordHandler(Handler, ABC):
 
         title = f"{record.name}:{record.levelname}"
         description = record.message
+
+        if len(description) > self.MAX_DESCRIPTION_LENGTH:
+            self.warning(
+                self.__class__.__name__, " Message description too long, truncating"
+            )
+            description = description[0 : self.MAX_DESCRIPTION_LENGTH]
+
+        if len(title) > self.MAX_TITLE_LENGTH:
+            self.warning(self.__class__.__name__, "Message title too long, truncating")
+            title = title[0 : self.MAX_TITLE_LENGTH]
 
         if record.exc_text is not None:
             description += f" -> {record.exc_text}"

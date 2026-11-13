@@ -51,8 +51,12 @@ async def _main():
 
     test_logs(logger)
     logger.info("RAPID TEST")
-    for i in range(10):
+    for i in range(5):
         logger.info(f"RAPID -> {i}")
+
+    logger.info("LENGTH TEST")
+    logger = logging.getLogger("B" * 500)
+    logger.info("LENGTH TEST! " + "A" * 10000)
 
     logger.info("TEST DONE")
     await task
