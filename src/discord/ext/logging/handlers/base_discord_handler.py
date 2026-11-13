@@ -72,13 +72,15 @@ class BaseDiscordHandler(Handler, ABC):
         description = record.message
 
         if len(description) > self.MAX_DESCRIPTION_LENGTH:
-            self.warning(
+            await self.warning(
                 self.__class__.__name__, " Message description too long, truncating"
             )
             description = description[0 : self.MAX_DESCRIPTION_LENGTH]
 
         if len(title) > self.MAX_TITLE_LENGTH:
-            self.warning(self.__class__.__name__, "Message title too long, truncating")
+            await self.warning(
+                self.__class__.__name__, "Message title too long, truncating"
+            )
             title = title[0 : self.MAX_TITLE_LENGTH]
 
         if record.exc_text is not None:
